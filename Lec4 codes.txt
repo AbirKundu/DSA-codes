@@ -1,0 +1,289 @@
+#include <stdio.h>
+#include <stdlib.h>
+struct node {
+  int value;
+  struct node *next;
+};
+void printLinkedlist(struct node *p) {
+  while (p != NULL) {
+    printf("%d ", p->value);
+    p = p->next;
+  }
+}
+int main() {
+  struct node *head;
+  struct node *one = NULL;
+  struct node *two = NULL;
+  struct node *three = NULL;
+
+  one = (struct node*)malloc(sizeof(struct node));
+  two = (struct node*)malloc(sizeof(struct node));
+  three = (struct node*)malloc(sizeof(struct node));
+
+  one->value = 1;
+  two->value = 2;
+  three->value = 3;
+
+  one->next = two;
+  two->next = three;
+  three->next = NULL;
+
+  head = one;
+  printLinkedlist(head);
+}
+
+
+
+******************************************************************
+#include <stdio.h>
+#include <stdlib.h>
+struct Node {
+  int data;
+  struct Node* next;
+};
+struct Node* head = NULL;
+
+void InsertAtHead(int new_data)
+{
+	struct Node* new_node = (struct Node*) malloc(sizeof(struct Node));
+	new_node->data = new_data;
+	new_node->next = head;
+	head = new_node;
+}
+void InsertAt(int data, int position) {
+    struct Node* newNode = malloc(sizeof(struct Node));
+    newNode->data = data;
+    newNode->next = NULL;
+    if (position == 1) {
+        newNode->next = head;
+        head = newNode;
+        return;
+    }
+    struct Node* previousNode = head;
+    for (int i = 0; i < position - 2; i++) {
+        previousNode = previousNode->next;
+    }
+    newNode->next = previousNode->next;
+    previousNode->next = newNode;
+}
+void InsertAtEnd(int data){
+    struct Node* new_node = (struct Node*) malloc(sizeof(struct Node));
+    struct Node *last = head;
+    new_node->data = data;
+	new_node->next = NULL;
+    if (head == NULL)
+	{
+	head = new_node;
+	return;
+	}
+	while (last->next != NULL)
+		last = last->next;
+	last->next = new_node;
+	return;
+}
+void printLinkedlist(struct Node *p) {
+  while (p != NULL) {
+    printf("%d ", p->data);
+    p = p->next;
+  }
+  printf("\n");
+}
+
+void Delete(int n)
+{
+    struct Node* temp1 = head;
+    if(n==1){
+        head = temp1->next;
+        free(temp1);
+        return;
+    }
+int i;
+    for(i=0;i<n-2;i++)
+    {
+        temp1 = temp1->next;
+    }
+    struct Node* temp2 = temp1->next;
+//nth position
+    temp1->next = temp2->next;
+//n+1 th position
+    free(temp2);
+}
+
+void search(int x)
+{
+struct Node* temp = head;
+int a = 1;
+while(temp!=NULL)
+{
+    if(temp->data==x)
+    {
+        printf("Found %d at %d \n", temp->data, a);
+        break;
+    }
+    temp=temp->next;
+    a=a+1;
+    }
+}
+void Reverse()
+{
+struct Node *current, *prev, *next;
+current = head;
+prev = NULL;
+while(current!=NULL)
+{
+    next = current->next;
+    current->next = prev;
+    prev = current;
+    current = next;
+    }
+    head = prev;
+}
+
+
+int main() {
+
+InsertAtHead(1);
+InsertAtEnd(5);
+InsertAtHead(3);
+InsertAtEnd(4);
+InsertAtHead(9);
+InsertAtEnd(2);
+InsertAt(20,3);
+printLinkedlist(head);
+Delete(4);
+printLinkedlist(head);
+search(9);
+Reverse();
+printLinkedlist(head);
+}
+
+
+
+
+*****************************************************************************
+
+#include<stdio.h>
+#include<stdlib.h>
+struct Node
+{
+    struct Node *prev;
+    struct Node *next;
+    int data;
+};
+struct Node *head;
+
+struct Node* getnewnode(int new_data){
+    struct Node* new_node = (struct Node*) malloc(sizeof(struct Node));
+	new_node->data = new_data;
+	new_node->prev = NULL;
+	new_node->next = NULL;
+	return new_node;
+};
+
+void InsertAtHead(int new_data)
+{
+	struct Node* new_node = getnewnode(new_data);
+	if(head == NULL){
+        head = new_node;
+        return;
+	}
+	head->prev = new_node;
+	new_node->next = head;
+	head = new_node;
+}
+
+void InsertAt(int data, int position) {
+    struct Node* newNode = getnewnode(data);
+    if (position == 1) {
+        head->prev = newNode;
+        newNode->next = head;
+        head = newNode;
+        return;
+    }
+struct Node* previousNode = head;
+    for (int i = 0; i < position - 2; i++) {
+        previousNode = previousNode->next;
+    }
+
+    newNode->prev = previousNode;
+    newNode->next = previousNode->next;
+    struct Node* nextNode = newNode->next;
+    nextNode->prev = newNode;
+    previousNode->next = newNode;
+
+}
+
+void InsertAtEnd(int data){
+    struct Node* new_node = getnewnode(data);
+    struct Node *last = head;
+    if (head == NULL)
+	{
+	head = new_node;
+	return;
+	}
+	while (last->next != NULL)
+		last = last->next;
+	last->next = new_node;
+	new_node->prev = last;
+	return;
+}
+
+void deleteFirst(){
+    struct Node* temp = head;
+    head = head->next;
+    free(temp);
+    head->prev = NULL;
+
+}
+
+void deleteAt(int position){
+    struct Node* temp = head;
+    struct Node* temp1 = NULL;
+    int i;
+    if(position == 1){
+        deleteFirst();
+        return;
+    }
+    for (i = 0; i< position - 2; i++){
+        temp = temp->next;
+    }
+    temp1= temp->next;
+    if(temp1->next == NULL){
+        temp->next = NULL;
+        free(temp1);
+        return;
+    }
+
+    temp->next = temp1->next;
+    temp1->next->prev = temp;
+    free(temp1);
+
+}
+
+
+void printList(struct Node *node)
+{
+while (node != NULL)
+{
+	printf(" %d", node->data);
+	node = node->next;
+}
+printf("\n");
+}
+
+int main(){
+    InsertAtHead(5);
+    InsertAtHead(4);
+    InsertAt(10, 2);
+    InsertAtEnd(21);
+    printList(head);
+    deleteFirst();
+    printList(head);
+    deleteAt(2);
+    printList(head);
+    return 0;
+}
+
+
+
+

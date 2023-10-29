@@ -1,0 +1,447 @@
+#include <stdio.h>
+#include <stdlib.h>
+#define MAX_SIZE 100
+// Stack implementation
+int stack[MAX_SIZE];
+int top = -1;
+void push(int item) {
+    if (top >= MAX_SIZE - 1) {
+printf("Stack Overflow\n");
+        return;
+    }
+    top++;
+    stack[top] = item;
+}
+int pop() {
+    if (top < 0) {
+printf("Stack Underflow\n");
+        return -1;
+    }
+    int item = stack[top];
+    top--;
+    return item;
+}
+int is_operator(char symbol) {
+    if (symbol == '+' || symbol == '-' || symbol == '*' || symbol == '/') {
+        return 1;
+    }
+    return 0;
+}
+int evaluate(char* expression) {
+    int i = 0;
+    char symbol = expression[i];
+    int operand1, operand2, result;
+
+    while (symbol != '\0') {
+        if (symbol >= '0' && symbol <= '9') {
+            int num = symbol - '0';
+            push(num);
+        }
+        else if (is_operator(symbol)) {
+            operand2 = pop();
+            operand1 = pop();
+            switch(symbol) {
+                case '+': result = operand1 + operand2; break;
+                case '-': result = operand1 - operand2; break;
+                case '*': result = operand1 * operand2; break;
+                case '/': result = operand1 / operand2; break;
+            }
+            push(result);
+        }
+i++;
+        symbol = expression[i];
+    }
+    result = pop();
+    return result;
+}
+
+int main() {
+    char expression[] = "5 6 7 + * 8 -";
+    int result = evaluate(expression);
+printf("Result= %d\n", result);
+return 0;
+}
+
+***********************************************************
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+#define MAX 20
+
+char stk[20];
+int top = -1;
+
+int isEmpty()
+{
+    return top == -1;
+}
+int isFull()
+{
+    return top == MAX - 1;
+}
+
+char peek()
+{
+    return stk[top];
+}
+
+char pop()
+{
+    if(isEmpty())
+        return -1;
+
+    char ch = stk[top];
+    top--;
+    return(ch);
+}
+
+void push(char oper)
+{
+    if(isFull())
+        printf("Stack Full!!!!");
+
+    else{
+        top++;
+        stk[top] = oper;
+    }
+}
+
+int checkPair(char val1,char val2){
+    return (( val1=='(' && val2==')' )||( val1=='[' && val2==']' )||( val1=='{' && val2=='}' ));
+}
+
+int checkBalanced(char expr[], int len){
+
+    for (int i = 0; i < len; i++)
+    {
+        if (expr[i] == '(' || expr[i] == '[' || expr[i] == '{')
+        {
+          push(expr[i]);
+        }
+        else
+        {
+        if (top == -1)
+            return 0;
+        else if(checkPair(peek(),expr[i]))
+        {
+            pop();
+            continue;
+        }
+        return 0;
+        }
+    }
+    if(top==-1){
+            return 1;
+    }
+    return 0;
+}
+int main() {
+  char exp[MAX] = "(({})[]{}";
+  int i = 0;
+
+  int len = strlen(exp);
+  checkBalanced(exp, len)?printf("Balanced"): printf("Not Balanced");
+
+  return 0;
+}
+
+*****************************
+//#include <limits.h>
+#include <stdio.h>
+#include <stdlib.h>
+#define MAX 20
+
+char stk[20];
+int top = -1;
+
+int isEmpty()
+{
+    return top == -1;
+}
+int isFull()
+{
+    return top == MAX - 1;
+}
+
+char peek()
+{
+    return stk[top];
+}
+
+char pop()
+{
+    if(isEmpty())
+        return -1;
+
+    char ch = stk[top];
+    top--;
+    return(ch);
+}
+
+void push(char oper)
+{
+    if(isFull())
+        printf("Stack Full!!!!");
+
+    else{
+        top++;
+        stk[top] = oper;
+    }
+}
+
+int checkIfOperand(char ch)
+{
+    return (ch >= 'a' && ch <= 'z') || (ch >= 'A' && ch <= 'Z');
+}
+
+int precedence(char ch)
+{
+    switch (ch)
+    {
+    case '+':
+    case '-':
+        return 1;
+
+    case '*':
+    case '/':
+        return 2;
+
+    case '^':
+        return 3;
+    }
+    return -1;
+}
+
+int covertInfixToPostfix(char* expression)
+{
+    int i, j;
+
+    for (i = 0, j = -1; expression[i]; ++i)
+    {
+       if (checkIfOperand(expression[i]))
+            expression[++j] = expression[i];
+
+        else if (expression[i] == '(')
+            push(expression[i]);
+
+        else if (expression[i] == ')')
+        {
+            while (!isEmpty() && peek() != '(')
+                expression[++j] = pop();
+            if (!isEmpty() && peek() != '(')
+                return -1;
+            else
+                pop();
+        }
+        else
+        {
+            while (!isEmpty() && precedence(expression[i]) <= precedence(peek()))
+                expression[++j] = pop();
+            push(expression[i]);
+        }
+
+    }
+
+    while (!isEmpty())
+        expression[++j] = pop();
+
+    expression[++j] = '\0';
+    printf( "%s", expression);
+}
+
+int main()
+{
+char expression[] = "((x+(y*z))-w)";
+    covertInfixToPostfix(expression);
+    return 0;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#include<stdio.h>
+#include<string.h>
+#include<limits.h>
+#include<stdlib.h>
+
+#define MAX 100
+
+int top = -1;
+char stack[MAX];
+
+// checking if stack is full
+int isFull ()
+{
+  return top == MAX - 1;
+}
+
+// checking is stack is empty
+int isEmpty ()
+{
+  return top == -1;
+}
+
+void push (char item)
+{
+  if (isFull ())
+    return;
+  top++;
+  stack[top] = item;
+}
+
+// Function to remove an item from stack.  It decreases top by 1 
+int pop ()
+{
+  if (isEmpty ())
+    return INT_MIN;
+
+  // decrements top and returns what has been popped      
+  return stack[top--];
+}
+
+// Function to return the top from stack without removing it 
+int peek ()
+{
+  if (isEmpty ())
+    return INT_MIN;
+  return stack[top];
+}
+
+// A utility function to check if the given character is operand 
+int checkIfOperand (char ch)
+{
+  return (ch >= 'a' && ch <= 'z') || (ch >= 'A' && ch <= 'Z');
+}
+
+// Fucntion to compare precedence
+// If we return larger value means higher precedence 
+int precedence (char ch)
+{
+  switch (ch)
+    {
+    case '+':
+    case '-':
+      return 1;
+
+    case '*':
+    case '/':
+      return 2;
+
+    case '^':
+      return 3;
+    }
+  return -1;
+}
+
+// The driver function for infix to postfix conversion 
+int getPostfix (char *expression)
+{
+  int i, j;
+
+  for (i = 0, j = -1; expression[i]; ++i)
+    {
+      
+      if (checkIfOperand (expression[i]))
+	expression[++j] = expression[i];
+
+      else if (expression[i] == '(')
+	push (expression[i]);
+ 
+      else if (expression[i] == ')')
+	{
+	  while (!isEmpty (stack) && peek (stack) != '(')
+	    expression[++j] = pop (stack);
+	  if (!isEmpty (stack) && peek (stack) != '(')
+	    return -1;		// invalid expression              
+	  else
+	    pop (stack);
+	}
+      else			// if an opertor
+	{
+	  while (!isEmpty (stack)
+		 && precedence (expression[i]) <= precedence (peek (stack)))
+	    expression[++j] = pop (stack);
+	  push (expression[i]);
+	}
+
+    }
+
+  // Once all inital expression characters are traversed
+  // adding all left elements from stack to exp
+  while (!isEmpty (stack))
+    expression[++j] = pop (stack);
+
+  expression[++j] = '\0';
+
+}
+
+void reverse (char *exp)
+{
+
+  int size = strlen (exp);
+  int j = size, i = 0;
+  char temp[size];
+
+  temp[j--] = '\0';
+  while (exp[i] != '\0')
+    {
+      temp[j] = exp[i];
+      j--;
+      i++;
+    }
+  strcpy (exp, temp);
+}
+
+void brackets (char *exp)
+{
+  int i = 0;
+  while (exp[i] != '\0')
+    {
+      if (exp[i] == '(')
+	exp[i] = ')';
+      else if (exp[i] == ')')
+	exp[i] = '(';
+      i++;
+    }
+}
+
+void InfixtoPrefix (char *exp)
+{
+
+  int size = strlen (exp);
+
+  // reverse string
+  reverse (exp);
+  //change brackets
+  brackets (exp);
+  //get postfix
+  getPostfix (exp);
+  // reverse string again
+  reverse (exp);
+}
+
+int main ()
+{
+  printf ("The infix is: ");
+
+  char expression[] = "(a/b)+c";
+  printf ("%s\n", expression);
+  InfixtoPrefix (expression);
+
+  printf ("The prefix is: ");
+  printf ("%s\n", expression);
+
+  return 0;
+}

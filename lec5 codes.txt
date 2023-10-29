@@ -1,0 +1,116 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+struct Node{
+    int data;
+    struct Node* next;
+
+};
+struct Node* tail = NULL;
+void AddToEmpty (int data){
+    if(tail == NULL){
+        struct Node* new_node = (struct Node*) malloc(sizeof(struct Node));
+        new_node->data = data;
+        new_node->next = new_node;
+        tail = new_node;
+    }
+    else{
+        printf("List is not empty");
+    }
+
+}
+void InsertAtHead(int new_data)
+{
+	struct Node* new_node = (struct Node*) malloc(sizeof(struct Node));
+	new_node->data = new_data;
+	new_node->next = tail->next;
+	tail->next = new_node;
+}
+void InsertAtEnd(int new_data)
+{
+	struct Node* new_node = (struct Node*) malloc(sizeof(struct Node));
+	new_node->data = new_data;
+	new_node->next = tail->next;
+	tail->next = new_node;
+	tail = new_node;
+}
+void InsertAt (int data, int position) {
+    struct Node* newNode = malloc(sizeof(struct Node));
+    newNode->data = data;
+    newNode->next = NULL;
+    if (position == 1) {
+        InsertAtHead(data);
+        return;
+    }
+    struct Node* previousNode = tail->next;
+for (int i = 0; i < position - 2; i++) {
+        previousNode = previousNode->next;
+    }
+    if(previousNode == tail){
+        InsertAtEnd(data);
+        return;
+    }
+    newNode->next = previousNode->next;
+    previousNode->next = newNode;
+}
+
+
+void printList()
+{
+    struct Node* temp = tail->next;
+    do{
+            printf("%d ", temp->data);
+            temp = temp->next;
+    }
+    while (temp != tail->next);
+    printf("\n");
+
+}
+void count(){
+    struct Node* temp = tail->next;
+    int count = 0;
+    while(temp!= tail){
+            temp = temp->next;
+            count++;
+    }
+    count++;
+    printf("%d ", count);
+}
+void deleteFirst(){
+    struct Node* temp = tail->next;
+    tail->next = temp->next;
+    free(temp);
+}
+void deleteAt(int pos){
+    if(tail == NULL){
+        printf("List is empty, can not delete");
+    }
+    struct Node* temp = tail->next;
+    if(tail->next == tail){
+        free(tail);
+        tail = NULL;
+    }
+for (int i = 0; i < pos - 2; i++) {
+        temp = temp->next;
+    }
+    struct Node* temp2 = temp->next;
+    temp->next = temp2->next;
+     if(temp2 == tail){
+        tail = temp;
+     }
+     free(temp2);
+}
+
+int main(){
+    AddToEmpty(5);
+    InsertAtHead(7);
+    InsertAtEnd(8);
+    InsertAt(9, 3);
+    InsertAt(11, 5);
+    printList();
+    deleteFirst();
+    printList();
+    deleteAt(4);
+    printList();
+
+}

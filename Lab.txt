@@ -1,0 +1,193 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+struct node {
+  int key;
+  struct node *left, *right;
+};
+
+int c = 0;
+
+int search(struct node* root,int data){
+    if(root == NULL){
+        return -1;
+    }
+    else if(data == root->key){
+        return root->key;
+    }
+    else if(data <= root->key){
+        search(root->left, data);
+    }else{
+        search(root->right, data);
+    }
+}
+
+struct node *newNode(int item) {
+  struct node *temp = (struct node *)malloc(sizeof(struct node));
+  temp->key = item;
+  temp->left = temp->right = NULL;
+  return temp;
+}
+
+void inorder(struct node *root) {
+  if (root != NULL) {
+
+    inorder(root->left);
+
+    printf("%d -> ", root->key);
+
+    inorder(root->right);
+  }
+}
+
+struct node *insert(struct node *node, int key) {
+
+  if (node == NULL) return newNode(key);
+
+  if (key < node->key)
+    node->left = insert(node->left, key);
+  else
+    node->right = insert(node->right, key);
+
+
+  return node;
+}
+
+struct node *minValueNode(struct node *node) {
+  struct node *current = node;
+
+  while (current && current->left != NULL)
+    current = current->left;
+
+  return current;
+}
+struct node *maxValueNode(struct node *node) {
+  struct node *current = node;
+  while (current && current->right != NULL)
+    current = current->right;
+
+  return current;
+}
+
+struct node *deleteNode(struct node *root, int key) {
+  if (root == NULL) return root;
+  if (key < root->key)
+    root->left = deleteNode(root->left, key);
+  else if (key > root->key)
+    root->right = deleteNode(root->right, key);
+  else {
+    if (root->left == NULL) {
+      struct node *temp = root->right;
+      free(root);
+      return temp;
+    } else if (root->right == NULL) {
+      struct node *temp = root->left;
+      free(root);
+      return temp;
+    }
+    struct node *temp = minValueNode(root->right);
+    root->key = temp->key;
+    root->right = deleteNode(root->right, temp->key);
+  }
+  return root;
+}
+void secondLargestUtil(struct node *root)
+{
+    if (root == NULL || c >= 2)
+        return;
+
+    secondLargestUtil(root->right);
+
+    c++;
+
+    if (c == 2)
+    {
+        printf("2nd largest element is  %d\n", root->key);
+        return;
+    }
+    secondLargestUtil(root->left);
+}
+
+int main() {
+  struct node *root = NULL;
+  root = insert(root, 50);
+  root = insert(root, 30);
+  root = insert(root, 20);
+  root = insert(root, 40);
+  root = insert(root, 70);
+  root = insert(root, 60);
+  root = insert(root, 80);
+  secondLargestUtil(root);
+}
+
+********************************************************
+
+#include <stdio.h>
+#include <stdlib.h>
+
+int arr[50];
+int i = -1;
+struct Node {
+
+	int data;
+	struct Node *left, *right;
+};
+
+struct Node* getNode(int data)
+{
+	struct Node* newNode = malloc(sizeof(struct Node));
+	newNode->data = data;
+	newNode->left = newNode->right = NULL;
+	return newNode;
+}
+
+
+void preorderTraversal(struct Node*);
+
+void inorderTraversal(struct Node* root)
+{
+	if (root == NULL)
+		return;
+
+	inorderTraversal(root->left);
+	arr[++i] = root->data;
+	inorderTraversal(root->right);
+}
+void BSTToMinHeap(struct Node* root)
+{
+	if (root == NULL)
+		return;
+	root->data = arr[++i];
+	BSTToMinHeap(root->left);
+	BSTToMinHeap(root->right);
+}
+void convertToMinHeapUtil(struct Node* root)
+{
+	inorderTraversal(root);
+	i=-1;
+	BSTToMinHeap(root);
+}
+void preorderTraversal(struct Node* root)
+{
+	if (!root)
+		return;
+	printf("%d ",root->data);
+	preorderTraversal(root->left);
+	preorderTraversal(root->right);
+}
+int main()
+{
+	struct Node* root = getNode(4);
+	root->left = getNode(2);
+	root->right = getNode(6);
+	root->left->left = getNode(1);
+	root->left->right = getNode(3);
+	root->right->left = getNode(5);
+	root->right->right = getNode(7);
+    preorderTraversal(root);
+	convertToMinHeapUtil(root);
+	printf("Preorder Traversal:");
+	preorderTraversal(root);
+
+	return 0;
+}
